@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  catalog-service:
+    image: soekopaacykel/catalogservice:latest
+    container_name: catalogservice
+    environment:
+      - ImagePath=/srv/images
+      - AUTHSERVICE_URL=http://authservice:8080
+    ports:
+      - "5001:8080"
+    networks:
+      - auctionGOnet
+    volumes:
+      - catalog-images:/srv/images
+    healthcheck:
+      test: ["CMD", "true"]  # En simpel kommando, der altid returnerer succes
+      interval: 30s  # Udfør healthcheck hver 30 sekunder
+      retries: 5      # Prøv op til 5 gange
+      start_period: 10s  # Vent 10 sekunder før første healthcheck
+      timeout: 10s    # Timeout på 10 sekunder per healthcheck
+    command: /bin/sh -c "sleep 15 && dotnet catalogservice.dll"  # Erstat med den kommando, der starter din applikation
+    restart: on-failure
+
+  auth-service:
+    image: cbjoedstrup/authservice-image
+    container_name: authservice
+    environment:
+      - UserServiceEndpoint=http://userservice:8080
+    ports:
+      - "5002:8080"
+    networks:
+      - auctionGOnet
+    healthcheck:
+      test: ["CMD", "true"]  # En simpel kommando, der altid returnerer succes
+      interval: 30s  # Udfør healthcheck hver 30 sekunder
+      retries: 5      # Prøv op til 5 gange
+      start_period: 10s  # Vent 10 sekunder før første healthcheck
+      timeout: 10s    # Timeout på 10 sekunder per healthcheck
+    command: /bin/sh -c "sleep 5 && dotnet authservice.dll"
+
+  user-service:
+    image: cbjoedstrup/userservice-image
+    container_name: userservice
+    ports:
+      - "5003:8080"
+    networks:
+      - auctionGOnet
+
+  bidworker:
+    image: soekopaacykel/bidworker:latest 
+    container_name: bidworker
+    environment:
+      - RabbitHost=rabbitmq  # Miljøvariabel for RabbitMQ
+    networks:
+      - auctionGOnet
+    healthcheck:
+      test: ["CMD", "true"]  # En simpel kommando, der altid returnerer succes
+      interval: 30s  # Udfør healthcheck hver 30 sekunder
+      retries: 5      # Prøv op til 5 gange
+      start_period: 10s  # Vent 10 sekunder før første healthcheck
+      timeout: 10s    # Timeout på 10 sekunder per healthcheck
+    command: /bin/sh -c "sleep 15 && dotnet bidworker.dll"  # Erstat med den kommando, der starter din applikation
+    restart: on-failure
+
+networks:
+  auctionGOnet:
+    external: true
+
+volumes:
+  catalog-images:
+    external: false
