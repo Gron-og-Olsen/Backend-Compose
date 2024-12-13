@@ -7,6 +7,9 @@ services:
     environment:
       - ImagePath=/srv/images
       - AUTHSERVICE_URL=http://authservice:8080
+      - MONGO_CONNECTION_STRING=mongodb://Admin:Password@mongodb:27017
+      - VareDatabaseName=VareDB
+      - VareCollectionName=VareCollection
     ports:
       - "5001:8080"
     networks:
