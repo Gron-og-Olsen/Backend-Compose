@@ -10,7 +10,7 @@ services:
     ports:
       - "5001:8080"
     networks:
-      - auctionGOnet
+      - hemmelig-env_auctionGOnet
     volumes:
       - catalog-images:/srv/images
     healthcheck:
@@ -23,14 +23,14 @@ services:
     restart: on-failure
 
   auth-service:
-    image: cbjoedstrup/authservice-image
+    image: cbjoedstrup/authservice-image:latest
     container_name: authservice
     environment:
       - UserServiceEndpoint=http://userservice:8080
     ports:
       - "5002:8080"
     networks:
-      - auctionGOnet
+      - hemmelig-env_auctionGOnet
     healthcheck:
       test: ["CMD", "true"]  # En simpel kommando, der altid returnerer succes
       interval: 30s  # Udfør healthcheck hver 30 sekunder
@@ -40,12 +40,16 @@ services:
     command: /bin/sh -c "sleep 5 && dotnet authservice.dll"
 
   user-service:
-    image: cbjoedstrup/userservice-image
+    image: cbjoedstrup/userservice-image:1.1.0
     container_name: userservice
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://Admin:Password@mongodb:27017
+      - DatabaseName=UserDB
+      - CollectionName=UserCollection
     ports:
       - "5003:8080"
     networks:
-      - auctionGOnet
+      - hemmelig-env_auctionGOnet
 
   bidworker:
     image: soekopaacykel/bidworker:latest 
@@ -53,7 +57,7 @@ services:
     environment:
       - RabbitHost=rabbitmq  # Miljøvariabel for RabbitMQ
     networks:
-      - auctionGOnet
+      - hemmelig-env_auctionGOnet
     healthcheck:
       test: ["CMD", "true"]  # En simpel kommando, der altid returnerer succes
       interval: 30s  # Udfør healthcheck hver 30 sekunder
@@ -64,7 +68,7 @@ services:
     restart: on-failure
 
 networks:
-  auctionGOnet:
+  hemmelig-env_auctionGOnet:
     external: true
 
 volumes:
