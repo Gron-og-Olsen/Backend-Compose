@@ -7,7 +7,7 @@ services:
     environment:
       - ImagePath=/srv/images
       - AUTHSERVICE_URL=http://authservice:8080
-      - MONGO_CONNECTION_STRING=mongodb://Admin:Password@mongodb:27017
+      - MONGO_CONNECTION_STRING=mongodb+srv://Admin:Password@auktionshuscluster.koi2w.mongodb.net/
       - VareDatabaseName=VareDB
       - VareCollectionName=VareCollection
     ports:
@@ -43,12 +43,12 @@ services:
     command: /bin/sh -c "sleep 5 && dotnet authservice.dll"
 
   user-service:
-    image: cbjoedstrup/userservice-image:1.1.0
+    image: cbjoedstrup/userservice-image:1.1.5
     container_name: userservice
     environment:
-      - MONGO_CONNECTION_STRING=mongodb://Admin:Password@mongodb:27017
-      - DatabaseName=UserDB
-      - CollectionName=UserCollection
+      - MONGO_CONNECTION_STRING=mongodb+srv://Admin:Password@auktionshuscluster.koi2w.mongodb.net/
+      - UserDatabaseName=UserDB
+      - UserCollectionName=UserCollection
     ports:
       - "5003:8080"
     networks:
