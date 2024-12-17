@@ -55,11 +55,13 @@ services:
       - hemmelig-env_auctionGOnet
 
   bidworker:
-    image: soekopaacykel/bidworker:latest 
+    image: cbjoedstrup/bidworker-image:1.0.1
     container_name: bidworker
     environment:
       - RabbitHost=rabbitmq  # Miljøvariabel for RabbitMQ
       - MONGO_CONNECTION_STRING=mongodb://Admin:Password@mongodb:27017
+      - BidDatabaseName=BidDB
+      - BidCollectionName=BidCollection
     networks:
       - hemmelig-env_auctionGOnet
     healthcheck:
