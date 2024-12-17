@@ -7,7 +7,7 @@ services:
     environment:
       - ImagePath=/srv/images
       - AUTHSERVICE_URL=http://authservice:8080
-      - MONGO_CONNECTION_STRING=mongodb://Admin:Password@mongodb:27017
+      - MONGO_CONNECTION_STRING=mongodb+srv://Admin:Password@auktionshuscluster.koi2w.mongodb.net
       - VareDatabaseName=VareDB
       - VareCollectionName=VareCollection
     ports:
@@ -46,7 +46,7 @@ services:
     image: cbjoedstrup/userservice-image:1.1.5
     container_name: userservice
     environment:
-      - MONGO_CONNECTION_STRING=mongodb://Admin:Password@mongodb:27017
+      - MONGO_CONNECTION_STRING=mongodb+srv://Admin:Password@auktionshuscluster.koi2w.mongodb.net
       - UserDatabaseName=UserDB
       - UserCollectionName=UserCollection
     ports:
@@ -55,11 +55,11 @@ services:
       - hemmelig-env_auctionGOnet
 
   bidworker:
-    image: cbjoedstrup/bidworker-image:1.0.1
+    image: cbjoedstrup/bidworker-image:1.0.2
     container_name: bidworker
     environment:
       - RabbitHost=rabbitmq  # Miljøvariabel for RabbitMQ
-      - MONGO_CONNECTION_STRING=mongodb://Admin:Password@mongodb:27017
+      - MONGO_CONNECTION_STRING=mongodb+srv://Admin:Password@auktionshuscluster.koi2w.mongodb.net
       - BidDatabaseName=BidDB
       - BidCollectionName=BidCollection
     networks:
