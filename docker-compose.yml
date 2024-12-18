@@ -30,6 +30,7 @@ services:
     container_name: authservice
     environment:
       - UserServiceEndpoint=http://userservice:8080
+      - VAULT_ENDPOINT=https://vault_dev:8201
     ports:
       - "5002:8080"
     networks:
